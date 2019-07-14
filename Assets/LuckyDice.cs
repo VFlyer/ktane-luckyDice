@@ -6,7 +6,7 @@ using UnityEngine;
 using KModkit;
 using rnd = UnityEngine.Random;
 
-public class luckyDiceScript : MonoBehaviour 
+public class LuckyDice : MonoBehaviour 
 {
 	public KMBombInfo bomb;
 	public KMAudio Audio;
@@ -19,6 +19,8 @@ public class luckyDiceScript : MonoBehaviour
 	public KMSelectable btn;
 	public KMSelectable[] diceBtns;
 	public GameObject[] dice;
+	public GameObject[] rotators;
+	public GameObject[] hl;
 	public Material[] colors;
 
 	int[] diceVal = new int[3];
@@ -26,19 +28,28 @@ public class luckyDiceScript : MonoBehaviour
 	int lucky;
 	int lastLuckyRoll;
 
+	Coroutine diceRoll;
+	bool animating = false;
+
 	void Awake()
 	{
 		moduleId = moduleIdCounter++;
+		GetComponent<KMBombModule>().OnActivate += Activate;
+
 		btn.OnInteract += delegate () { Roll(); return false; };
 		diceBtns[0].OnInteract += delegate () { SelectDice(0); return false; };
 		diceBtns[1].OnInteract += delegate () { SelectDice(1); return false; };
 		diceBtns[2].OnInteract += delegate () { SelectDice(2); return false; };
 	}
 
+	void Activate()
+	{
+		Roll();
+	}
+
 	void Start () 
 	{
 		SetupDice();
-		Roll();
 	}
 	
 	void Roll()
@@ -46,11 +57,17 @@ public class luckyDiceScript : MonoBehaviour
 		if(moduleSolved)
 			return;
 
+		Audio.PlaySoundAtTransform("roll", transform);
+
 		SetDiceValues();
 		
 		SetDiceRotation(0, diceVal[0]);
 		SetDiceRotation(1, diceVal[1]);
 		SetDiceRotation(2, diceVal[2]);
+
+		if(diceRoll != null)
+			StopCoroutine(diceRoll);
+		diceRoll = StartCoroutine("RollAnim");
 	}
 
 	void SetDiceRotation(int diceIndex, int val)
@@ -286,11 +303,12 @@ public class luckyDiceScript : MonoBehaviour
 
 	void SelectDice(int n)
 	{
-		if(moduleSolved)
+		if(moduleSolved || animating)
 			return;
 			
 		if(n == lucky)
 		{
+			Audio.PlaySoundAtTransform("correct", transform);
         	Debug.LogFormat("[Lucky Dice #{0}] Selected the lucky die ({1} - {2}). Module solved.", moduleId, lucky + 1, GetColorName(diceColor[lucky]));
 			moduleSolved = true;
             GetComponent<KMBombModule>().HandlePass();
@@ -321,5 +339,45 @@ public class luckyDiceScript : MonoBehaviour
 		}
 
 		return "";
+	}
+
+	IEnumerator RollAnim()
+	{
+		animating = true;
+
+		foreach(GameObject d in hl)
+			d.gameObject.SetActive(false);		
+
+		rotators[0].transform.localPosition = new Vector3(-0.0261f + 0.15f, 0.0346f + 0.04f, 0.0355f + 0.015f);
+		rotators[0].transform.localEulerAngles = new Vector3(0, 0, 270f);
+		rotators[1].transform.localPosition = new Vector3(0.0396f + 0.1f, 0.0346f + 0.04f, 0.0052f + 0.015f);
+		rotators[1].transform.localEulerAngles = new Vector3(0, 0, 270f);
+		rotators[2].transform.localPosition = new Vector3(-0.0208f + 0.15f, 0.0346f + 0.04f, -0.034f + 0.015f);
+		rotators[2].transform.localEulerAngles = new Vector3(0, 0, 270f);
+
+		float[] xIncrement = {0.0075f, 0.005f, 0.0075f};
+
+		for(int i = 0; i < 20; i++)
+		{
+			for(int j = 0; j < 3; j++)
+			{
+				Vector3 pos = rotators[j].transform.localPosition; 
+				rotators[j].transform.localEulerAngles = rotators[j].transform.localEulerAngles - new Vector3(0, 0, 13.5f);
+
+				if(i < 10)
+					rotators[j].transform.localPosition = pos - new Vector3(xIncrement[j], 0.004f, 0.0015f); 
+				else if(i < 15)
+					rotators[j].transform.localPosition = pos - new Vector3(xIncrement[j], -0.002f, -0.0015f); 
+				else
+					rotators[j].transform.localPosition = pos - new Vector3(xIncrement[j], 0.002f, 0.0015f); 
+
+			}
+			yield return new WaitForSeconds(0.017f);
+		}
+
+		foreach(GameObject d in hl)
+			d.gameObject.SetActive(true);
+		
+		animating = false;
 	}
 }
