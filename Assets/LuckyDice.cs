@@ -132,9 +132,9 @@ public class LuckyDice : MonoBehaviour
 			}
 			case 1:
 			{
-				do {
-					diceVal[lucky] = rnd.Range(1, 7);
-				} while (diceVal[lucky] == 3 || diceVal[lucky] == 6);
+				diceVal[lucky] = rnd.Range(1, 4);
+				if(diceVal[lucky] == 2)
+					diceVal[lucky] = 5;
 				for(int i = 0; i < diceVal.Length; i++)
 				{
 					if(i != lucky)
@@ -285,9 +285,9 @@ public class LuckyDice : MonoBehaviour
 			}
 			case 9:
 			{
-				do {
-					diceVal[lucky] = rnd.Range(1, 7);
-				} while (diceVal[lucky] == 1 || diceVal[lucky] == 4);
+				diceVal[lucky] = rnd.Range(1, 4);
+				if(diceVal[lucky] == 1)
+					diceVal[lucky] = 5;
 				for(int i = 0; i < diceVal.Length; i++)
 				{
 					if(i != lucky)
