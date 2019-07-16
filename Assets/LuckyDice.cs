@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using KModkit;
+using System.Text.RegularExpressions;
 using rnd = UnityEngine.Random;
 
 public class LuckyDice : MonoBehaviour 
@@ -380,4 +381,86 @@ public class LuckyDice : MonoBehaviour
 		
 		animating = false;
 	}
+
+    //twitch plays
+    private bool isValid1(string s)
+    {
+        char[] valids = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+        foreach(char c in s)
+        {
+            if (!valids.Contains(c))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private bool isValid2(string s)
+    {
+        string[] valids = { "T", "BL", "BR", "t", "bl", "br" };
+        if (!valids.Contains(s))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} press <die> [Presses the specificed die] | !{0} roll <#> [Rolls the dice <#> times] | Valid dice are T(top), BL(bottomleft), and BR(bottomright)";
+    #pragma warning restore 414
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        if (Regex.IsMatch(command, @"^\s*roll\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            btn.OnInteract();
+            yield break;
+        }
+        string[] parameters = command.Split(' ');
+        if (Regex.IsMatch(parameters[0], @"^\s*roll\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            if(parameters.Length == 2)
+            {
+                if (isValid1(parameters[1]))
+                {
+                    yield return null;
+                    int temp = 0;
+                    int.TryParse(parameters[1], out temp);
+                    int counter = 0;
+                    while(counter != temp)
+                    {
+                        btn.OnInteract();
+                        yield return new WaitForSeconds(1.0f);
+                        yield return "trycancel The dice rolling has been cancelled due to a request to cancel!";
+                        counter++;
+                    }
+                }
+            }
+            yield break;
+        }
+        if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            if (parameters.Length == 2)
+            {
+                if (isValid2(parameters[1]))
+                {
+                    yield return null;
+                    if (parameters[1].EqualsIgnoreCase("T"))
+                    {
+                        diceBtns[0].OnInteract();
+                    }
+                    else if (parameters[1].EqualsIgnoreCase("BL"))
+                    {
+                        diceBtns[2].OnInteract();
+                    }
+                    else if (parameters[1].EqualsIgnoreCase("BR"))
+                    {
+                        diceBtns[1].OnInteract();
+                    }
+                }
+            }
+            yield break;
+        }
+    }
 }
