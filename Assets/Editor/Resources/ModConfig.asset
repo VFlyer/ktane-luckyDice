@@ -14,11 +14,11 @@ MonoBehaviour:
   id: luckyDice
   title: Lucky Dice
   description: "Your work here is over. From this point on, it\u2019s all down to
-    luck.\n\nModule by Mirage Xel\r\nImplemented by TheThirdMan\r\nmoduleID: luckyDice\r\n\r\nManual
-    HTML: https://ktane.timwi.de/HTML/Lucky%20Dice.html\r\nManual PDF: https://ktane.timwi.de/PDF/Lucky%20Dice.pdf\r\n\r\nGitHub
-    Repository: https://github.com/luisdiogo98/ktane-luckyDice\r\n\r\nAny problems/suggestions,
-    feel free to contact me on the KTaNE Discord @TheThirdMan. Join the KTaNE Discord
-    here: https://discord.gg/Fv7YEDj"
-  version: 1.1
+    luck.\n\nModule idea by Panoptes (Xel\r)\nOriginally implemented by TheThirdMan\r\nReuploaded
+    and maintained by VFlyer\nmoduleID: luckyDice\r\n\r\nManual HTML: https://ktane.timwi.de/HTML/Lucky%20Dice.html\r\nManual
+    PDF: https://ktane.timwi.de/PDF/Lucky%20Dice.pdf\r\n\r\nGitHub Repository (Legacy):
+    https://github.com/luisdiogo98/ktane-luckyDice\r\nGitHub Repository (Reupload):
+    https://github.com/VFlyer/ktane-luckyDice\r\n"
+  version: 1.2
   outputFolder: build
   previewImage: {fileID: 2800000, guid: a85f1db4063754e4598630c41978efb3, type: 3}
