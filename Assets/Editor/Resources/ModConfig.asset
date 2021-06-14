@@ -14,8 +14,10 @@ MonoBehaviour:
   id: luckyDice
   title: Lucky Dice
   description: "Your work here is over. From this point on, it\u2019s all down to
-    luck.\n\nModule idea by Panoptes (Xel\r)\nOriginally implemented by TheThirdMan\r\nReuploaded
-    and maintained by VFlyer\nmoduleID: luckyDice\r\n\r\nManual HTML: https://ktane.timwi.de/HTML/Lucky%20Dice.html\r\nManual
+    luck.\n[b]This is a reupload of the original module. Please unsubscribe/disable
+    the original module [url=https://steamcommunity.com/workshop/browse/?appid=341800]here.[/url][/b]\nModule
+    idea by Panoptes (Xel\r)\nOriginally implemented by TheThirdMan\r\nReuploaded
+    and Maintained by VFlyer\nmoduleID: luckyDice\r\n\r\nManual HTML: https://ktane.timwi.de/HTML/Lucky%20Dice.html\r\nManual
     PDF: https://ktane.timwi.de/PDF/Lucky%20Dice.pdf\r\n\r\nGitHub Repository (Legacy):
     https://github.com/luisdiogo98/ktane-luckyDice\r\nGitHub Repository (Reupload):
     https://github.com/VFlyer/ktane-luckyDice\r\n"
