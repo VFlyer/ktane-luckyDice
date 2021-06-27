@@ -126,7 +126,6 @@ public class LuckyDice : MonoBehaviour
     {
 		Dictionary<int, int[]> blacklistLuckyDice = new Dictionary<int, int[]>()
 		{
-            { 3, new[] { 7 } },
 			{ 7, new[] { 3 } }
 		};
 		// Check if there is a key for that specific lucky dice, and prohibit any other dice being colored as such.
