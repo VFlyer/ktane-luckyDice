@@ -122,30 +122,41 @@ public class LuckyDice : MonoBehaviour
 		dice[diceIndex].transform.localEulerAngles = new Vector3(diceX, diceY, diceZ);
 	}
 
+	bool IsBlacklisted()
+    {
+		Dictionary<int, int[]> blacklistLuckyDice = new Dictionary<int, int[]>()
+		{
+            { 3, new[] { 7 } },
+			{ 7, new[] { 3 } }
+		};
+		// Check if there is a key for that specific lucky dice, and prohibit any other dice being colored as such.
+		return blacklistLuckyDice.ContainsKey(diceColor[lucky]) &&
+			diceColor.Any(a => blacklistLuckyDice[diceColor[lucky]].Contains(a));
+    }
+
+
 	void SetupDice()
 	{
 		lastLuckyRoll = -1;
-
-		List<int> used = new List<int>();
-
-		for(int i = 0; i < dice.Length; i++)
+		do
 		{
-			int color;
-			do {
-				color = rnd.Range(0, colors.Length);
-			} while(used.Contains(color));
-			diceColor[i] = color;
-			used.Add(color);
-			dice[i].transform.Find("cube").GetComponentInChildren<Renderer>().material = colors[diceColor[i]];
-			if(diceColor[i] == 7)
-				dice[i].transform.Find("pips").GetComponentInChildren<Renderer>().material = colors[9];
-			else
-				dice[i].transform.Find("pips").GetComponentInChildren<Renderer>().material = colors[7];
+			List<int> used = new List<int>();
+			for (int i = 0; i < dice.Length; i++)
+			{
+				int color;
+				do
+				{
+					color = rnd.Range(0, colors.Length);
+				} while (used.Contains(color));
+				diceColor[i] = color;
+				used.Add(color);
+				dice[i].transform.Find("cube").GetComponentInChildren<Renderer>().material = colors[diceColor[i]];
+				dice[i].transform.Find("pips").GetComponentInChildren<Renderer>().material = diceColor[i] == 7 ? colors[9] : colors[7];
+            }
+			lucky = rnd.Range(0, 3);
 		}
-
+		while (IsBlacklisted());
         Debug.LogFormat("[Lucky Dice #{0}] Dice colors (In this order; Top, Bottom Right, Bottom Left): {1}", moduleId, diceColor.Select(a => GetColorName(a)).Join(", "));
-
-		lucky = rnd.Range(0, 3);
 
         Debug.LogFormat("[Lucky Dice #{0}] Determined lucky die: {1} ({2}).", moduleId, GetPosition(lucky), GetColorName(diceColor[lucky]));
 	}
@@ -154,7 +165,7 @@ public class LuckyDice : MonoBehaviour
 	{
 		switch(diceColor[lucky])
 		{
-			case 0:
+			case 0: // Red
 			{
 				diceVal[lucky] = rnd.Range(2, 7);
 				for(int i = 0; i < diceVal.Length; i++)
@@ -164,7 +175,7 @@ public class LuckyDice : MonoBehaviour
 				}
 				break;
 			}
-			case 1:
+			case 1: // Pink
 			{
 				diceVal[lucky] = rnd.Range(1, 4);
 				if(diceVal[lucky] == 2)
@@ -176,7 +187,7 @@ public class LuckyDice : MonoBehaviour
 				}
 				break;
 			}
-			case 2:
+			case 2: // Purple
 			{
 				if(lastLuckyRoll == -1)
 				{
@@ -201,7 +212,7 @@ public class LuckyDice : MonoBehaviour
 				}
 				break;
 			}
-			case 3:
+			case 3: // Orange
 			{
 				int min;
 				do
@@ -222,7 +233,7 @@ public class LuckyDice : MonoBehaviour
 
 				break;
 			}
-			case 4:
+			case 4: // Yellow
 			{
 				if(lastLuckyRoll == -1)
 				{
@@ -239,7 +250,7 @@ public class LuckyDice : MonoBehaviour
 				}
 				break;
 			}
-			case 5:
+			case 5: // Cyan
 			{
 				int min;
 				int max;
@@ -264,7 +275,7 @@ public class LuckyDice : MonoBehaviour
 
 				break;
 			}
-			case 6:
+			case 6: // Blue
 			{
 				diceVal[lucky] = rnd.Range(4, 7);
 				if(diceVal[lucky] == 5)
@@ -276,7 +287,7 @@ public class LuckyDice : MonoBehaviour
 				}
 				break;
 			}
-			case 7:
+			case 7: // White
 			{
 				int min;
 				do
@@ -297,7 +308,7 @@ public class LuckyDice : MonoBehaviour
 
 				break;
 			}
-			case 8:
+			case 8: // Gray
 			{
 				int max = -1;
 				for(int i = 0; i < diceVal.Length; i++)
@@ -317,7 +328,7 @@ public class LuckyDice : MonoBehaviour
 
 				break;
 			}
-			case 9:
+			case 9: // Black
 			{
 				diceVal[lucky] = rnd.Range(1, 4);
 				if(diceVal[lucky] == 1)
@@ -333,7 +344,7 @@ public class LuckyDice : MonoBehaviour
 
 		lastLuckyRoll = diceVal[lucky];
 		allDiceRolls.Add(diceVal.ToArray());
-        Debug.LogFormat("[Lucky Dice #{0}] Dice roll: {1}", moduleId, diceVal.Join(", "));
+        Debug.LogFormat("[Lucky Dice #{0}] New Dice Roll (In this order; Top, Bottom Right, Bottom Left): {1}", moduleId, diceVal.Join(", "));
 	}
 
 	void SelectDice(int n)
